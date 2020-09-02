@@ -2,6 +2,7 @@ import axios from "axios";
 import qs from 'qs'
 
 import store from "../store"
+import router from "../router"
 import {
   failureAlert
 } from "../utils/alert";
@@ -10,7 +11,7 @@ import {
 const locUrl = '/api'
 
 // 请求拦截
-axios.interceptors.response.use(config => {
+axios.interceptors.request.use(config => {
   // 除了登录接口之外，其他接口都需要携带一个token
   if (config.url == locUrl + '/api/userlogin') {
     return config;

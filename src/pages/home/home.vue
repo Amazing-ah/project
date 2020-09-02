@@ -10,6 +10,16 @@ export default {
   data() {
     return {};
   },
+  computed: {
+    ...mapGetters({
+      list: "goodsCate/list",
+    }),
+  },
+  methods: {
+    ...mapActions({
+      reqGoodsList: "goodsCate/reqGoodsListAction",
+    }),
+  },
   watch: {
     list: {
       handler() {
@@ -27,7 +37,7 @@ export default {
               data: ["分类数量"],
             },
             xAxis: {
-              data: this.list.map((item) => item.title),
+              data: this.list.map((item) => item.catename),
             },
             yAxis: {},
             series: [
@@ -48,18 +58,9 @@ export default {
       deep: true,
     },
   },
-  computed: {
-    ...mapGetters({
-      list: "menu/list",
-    }),
-  },
-  methods: {
-    ...mapActions({
-      reqAdminList: "menu/reqListAction",
-    }),
-  },
+
   mounted() {
-    this.reqAdminList();
+    this.reqGoodsList();
   },
 };
 </script>

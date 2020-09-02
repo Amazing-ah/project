@@ -92,9 +92,7 @@ export default {
       this.$router.push("/login");
     },
   },
-  mounted() {
-    console.log(this.info.menus);
-  },
+  mounted() {},
 };
 </script>
 <style scoped>
