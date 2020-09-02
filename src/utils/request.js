@@ -481,3 +481,52 @@ export const reqShangPinTotal = () => {
   })
 }
 /* ----------------------商品管理结束------------------------------------  */
+
+/* ----------------------限时秒杀------------------------------------  */
+//限时秒杀添加
+export const reqSecKillAdd = (form) => {
+  return axios({
+    url: locUrl + '/api/seckadd',
+    method: 'post',
+    data: qs.stringify(form)
+  })
+}
+//限时秒杀列表
+export const reqSecKillList = () => {
+  return axios({
+    url: locUrl + '/api/secklist',
+    method: 'get',
+  })
+}
+
+//限时秒杀详情
+export const reqSecKillDetail = (id) => {
+  return axios({
+    url: locUrl + '/api/seckinfo',
+    method: 'get',
+    params: id
+  })
+}
+
+//限时秒杀修改
+export const reqSecKillChange = (form) => {
+  return axios({
+    url: locUrl + '/api/seckedit',
+    method: 'post',
+    data: qs.stringify(form)
+  })
+}
+
+//限时秒杀删除
+export const reqSecKillDel = (id) => {
+  return axios({
+    url: locUrl + '/api/seckdelete',
+    method: 'post',
+    data: qs.stringify(id)
+  })
+}
+
+
+
+
+/* ----------------------限时秒杀结束------------------------------------  */

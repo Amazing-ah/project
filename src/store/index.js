@@ -19,6 +19,7 @@ import standard from './moudles/standard'
 import carousel from './moudles/carousel'
 import goodsManage from "./moudles/goodsManage"
 import user from './moudles/user'
+import secKill from './moudles/secKill'
 export default new Vuex.Store({
   state,
   mutations,
@@ -33,6 +34,7 @@ export default new Vuex.Store({
     standard,
     carousel,
     goodsManage,
-    user
+    user,
+    secKill
   }
 })

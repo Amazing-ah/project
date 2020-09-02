@@ -4,7 +4,7 @@
       :title="info.title"
       :visible.sync="info.isShow"
       width="60%"
-      @closed="close"
+      @close="close"
       @opened="creatEditor"
     >
       <el-form :model="form">
@@ -244,8 +244,24 @@ export default {
     cancel() {
       this.$emit("hide");
     },
-    close() {},
-    change() {},
+    close() {
+      !this.info.isAdd && this.empty();
+    },
+    change() {
+      //取出富文本编辑器的内容，赋值给form的description
+      this.form.description = this.editor.txt.html();
+
+      reqShangPinChange(this.form).then((res) => {
+        if (res.data.code == 200) {
+          successAlert("更新成功");
+          this.$emit("hide");
+          this.empty();
+          this.reqList();
+        } else {
+          failureAlert(res.data.msg);
+        }
+      });
+    },
     creatEditor() {
       this.editor = new E("#editor");
       this.editor.create();

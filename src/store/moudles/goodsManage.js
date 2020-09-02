@@ -20,11 +20,12 @@ const mutations = {
   }
 }
 const actions = {
-  reqShangPinListAction(context) {
-    reqShangPinList({
-      size: context.state.size,
-      page: context.state.page
-    }).then(res => {
+  reqShangPinListAction(context, bool) {
+    let params = bool ? {} : {
+      page: context.state.page,
+      size: context.state.size
+    }
+    reqShangPinList(params).then(res => {
       let arr = res.data.list ? res.data.list : []
       context.commit("changeList", arr)
     })
