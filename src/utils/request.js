@@ -1,12 +1,42 @@
 import axios from "axios";
 import qs from 'qs'
 
+import store from "../store"
+import {
+  failureAlert
+} from "../utils/alert";
+
+
 const locUrl = '/api'
 
+// 请求拦截
+axios.interceptors.response.use(config => {
+  // 除了登录接口之外，其他接口都需要携带一个token
+  if (config.url == locUrl + '/api/userlogin') {
+    return config;
+  }
+
+  config.headers.authorization = store.state.user.info.token;
+  return config;
+})
+
+
+
+// 响应拦截
 axios.interceptors.response.use(res => {
   console.group('-------请求的地址是:' + res.config.url + '-------')
   console.log(res);
   console.groupEnd()
+
+  if (res.data.msg === "登录已过期或访问权限受限") {
+    failureAlert("登录已过期或访问权限受限")
+    //清空info
+    store.dispatch("user/changeInfoAction", {})
+    //跳转到登录 
+    router.push("/login")
+  }
+
+
   return res;
 })
 
