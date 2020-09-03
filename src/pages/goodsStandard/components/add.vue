@@ -11,10 +11,6 @@
           v-for="(item, index) in valueList"
           label="规格属性"
           :key="index"
-          :prop="'valueList'+index+'.value'"
-          :rules="{
-      required: true, message: '规格属性不能为空', trigger: 'blur'
-    }"
         >
           <el-row>
             <el-col :span="18">
@@ -102,7 +98,7 @@ export default {
         failureAlert("请输入分类名称");
         return;
       }
-      if (this.form.attrs === "") {
+      if (this.valueList.some((item) => item.value === "")) {
         failureAlert("请输入规格属性");
         return;
       }
@@ -143,6 +139,14 @@ export default {
       });
     },
     change() {
+      if (this.form.specsname === "") {
+        failureAlert("请输入分类名称");
+        return;
+      }
+      if (this.valueList.some((item) => item.value === "")) {
+        failureAlert("请输入规格属性");
+        return;
+      }
       this.form.attrs = JSON.stringify(
         this.valueList.map((item) => item.value)
       );

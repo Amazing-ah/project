@@ -6,7 +6,7 @@
           <el-input v-model="form.title" autocomplete="off"></el-input>
         </el-form-item>
 
-        <el-form-item label="活动期限" :label-width="width" prop="time">
+        <el-form-item label="活动期限" :label-width="width">
           <el-date-picker
             v-model="time"
             value-format="timestamp"
@@ -101,7 +101,6 @@ export default {
       },
       rules: {
         title: [{ required: true, message: "请输入标题", trigger: "blur" }],
-        time: [{ required: true, message: "请选择时间", trigger: "change" }],
         first_cateid: [
           { required: true, message: "请选择一级标题", trigger: "change" },
         ],
@@ -191,6 +190,11 @@ export default {
         failureAlert("请选择商品");
         return;
       }
+
+      this.form.begintime = this.time[0];
+      this.form.endtime = this.time[1];
+      console.log(this.form.begintime);
+      console.log(this.form.endtime);
       reqSecKillAdd(this.form).then((res) => {
         if (res.data.code == 200) {
           //添加成功
@@ -210,6 +214,8 @@ export default {
       reqSecKillDetail({ id: id }).then((res) => {
         this.form = res.data.list;
         this.form.id = id;
+        // this.time.push(res.data.list.begintime);
+        // this.time.push(res.data.list.endtime);
         this.time = [res.data.list.begintime, res.data.list.endtime];
         // //二级分类
         this.secondCateList = this.goodsList.find(
