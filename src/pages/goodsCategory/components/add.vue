@@ -1,8 +1,8 @@
 <template>
   <div>
-    <el-dialog :title="info.title" :visible.sync="info.isShow">
-      <el-form :model="form">
-        <el-form-item label="上级分类" :label-width="width">
+    <el-dialog :title="info.title" :visible.sync="info.isShow" @close="close">
+      <el-form :model="form" :rules="rules" ref="clearE">
+        <el-form-item label="上级分类" :label-width="width" prop="pid">
           <el-select v-model="form.pid">
             <el-option value label="--请选择--" disabled></el-option>
             <el-option label="顶级分类" :value="0"></el-option>
@@ -10,12 +10,12 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="分类名称" :label-width="width">
+        <el-form-item label="分类名称" :label-width="width" prop="catename">
           <el-input v-model="form.catename" autocomplete="off"></el-input>
         </el-form-item>
 
         <!-- 图片 -->
-        <el-form-item label="图片" :label-width="width" v-if="form.pid!=0">
+        <el-form-item label="图片" :label-width="width" v-if="form.pid!=0" prop="pic">
           <div class="upload-box">
             <h3 class="upload-add">+</h3>
             <img class="upload-img" v-if="imgUrl" :src="imgUrl" alt />
@@ -58,6 +58,13 @@ export default {
         img: "",
         status: 1,
       },
+      rules: {
+        pid: [{ required: true, message: "请选择分类", trigger: "change" }],
+        catename: [
+          { required: true, message: "请选择分类名称", trigger: "blur" },
+        ],
+        pic: [{ required: true, message: "请选择分类名称", trigger: "change" }],
+      },
     };
   },
   watch: {},
@@ -70,7 +77,10 @@ export default {
     ...mapActions({
       reqGoodsList: "goodsCate/reqGoodsListAction",
     }),
-
+    close() {
+      !this.info.isAdd && this.empty();
+      this.$refs.clearE.clearValidate();
+    },
     selectImg(e) {
       var file = e.target.files[0];
 
@@ -92,6 +102,18 @@ export default {
     },
     addList() {
       //   this.$emit("hide");
+      if (
+        (this.form.pid === 0 && this.form.catename === "") ||
+        (this.form.pid !== 0 && this.form.catename === "")
+      ) {
+        failureAlert("请输入分类名称");
+        return;
+      }
+      if (this.form.pid !== 0 && this.form.img === "") {
+        failureAlert("请添加图片");
+        return;
+      }
+
       reqGoodsAdd(this.form).then((res) => {
         if (res.data.code == 200) {
           //添加成功
@@ -110,10 +132,11 @@ export default {
     cancel() {
       this.$emit("hide");
       this.empty();
+      this.$refs.clearE.clearValidate();
     },
     empty() {
       this.form = {
-        pid: "",
+        pid: 0,
         catename: "",
         img: "",
         status: 1,
@@ -128,6 +151,17 @@ export default {
       });
     },
     change() {
+      if (
+        (this.form.pid === 0 && this.form.catename === "") ||
+        (this.form.pid !== 0 && this.form.catename === "")
+      ) {
+        failureAlert("请输入分类名称");
+        return;
+      }
+      if (this.form.pid !== 0 && this.form.img === "") {
+        failureAlert("请添加图片");
+        return;
+      }
       reqGoodsChange(this.form).then((res) => {
         if (res.data.code == 200) {
           //添加成功

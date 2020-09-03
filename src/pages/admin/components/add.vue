@@ -118,7 +118,7 @@ export default {
           this.reqAdminTotal();
           this.adminListActio();
         } else {
-          warningAlert(res.data.msg);
+          failureAlert(res.data.msg);
         }
       });
     },
