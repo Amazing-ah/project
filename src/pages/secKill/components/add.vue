@@ -1,7 +1,7 @@
 <template>
   <div class="add">
     <el-dialog :title="info.title" :visible.sync="info.isShow" width="60%" @close="close">
-      <el-form :model="form">
+      <el-form :model="form" :rules="rules" ref="clearE">
         <el-form-item label="活动名称" :label-width="width">
           <el-input v-model="form.title" autocomplete="off"></el-input>
         </el-form-item>
@@ -98,6 +98,11 @@ export default {
         endtime: "",
         goodsid: "",
         status: 1,
+      },
+      rules: {
+        roleid: [
+          { required: true, message: "请选择所属角色", trigger: "change" },
+        ],
       },
     };
   },
@@ -196,9 +201,11 @@ export default {
     },
     cancel() {
       this.$emit("hide");
+      this.$refs.clearE.clearValidate();
     },
     close() {
       !this.info.isAdd && this.empty();
+      this.$refs.clearE.clearValidate();
     },
     change() {
       reqSecKillChange(this.form).then((res) => {

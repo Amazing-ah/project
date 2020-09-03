@@ -1,13 +1,13 @@
 <template>
   <div>
     <el-dialog :title="info.title" :visible.sync="info.isShow">
-      <el-form :model="form">
-        <el-form-item label="标题" :label-width="width">
+      <el-form :model="form" :rules="rules" ref="clearE">
+        <el-form-item label="标题" :label-width="width" prop="title">
           <el-input v-model="form.title" autocomplete="off"></el-input>
         </el-form-item>
 
         <!-- 图片 -->
-        <el-form-item label="图片" :label-width="width">
+        <el-form-item label="图片" :label-width="width" prop="img">
           <div class="upload-box">
             <h3 class="upload-add">+</h3>
             <img class="upload-img" v-if="imgUrl" :src="imgUrl" alt />
@@ -49,6 +49,10 @@ export default {
         img: "",
         status: 1,
       },
+      rules: {
+        title: [{ required: true, message: "请输入角色名称", trigger: "blur" }],
+        img: [{ required: true, message: "请输入角色名称", trigger: "blur" }],
+      },
     };
   },
   watch: {},
@@ -81,7 +85,14 @@ export default {
       this.form.img = file;
     },
     add() {
-      //   this.$emit("hide");
+      if (this.form.title === "") {
+        failureAlert("请输入标题");
+        return;
+      }
+      if (this.form.img === "") {
+        failureAlert("请添加图片");
+        return;
+      }
       reqBannerAdd(this.form).then((res) => {
         if (res.data.code == 200) {
           //添加成功
@@ -100,6 +111,7 @@ export default {
     cancel() {
       this.$emit("hide");
       this.empty();
+      this.$refs.clearE.clearValidate();
     },
     empty() {
       this.form = {
@@ -117,6 +129,14 @@ export default {
       });
     },
     change() {
+      if (this.form.title === "") {
+        failureAlert("请输入标题");
+        return;
+      }
+      if (this.form.img === "") {
+        failureAlert("请添加图片");
+        return;
+      }
       reqBannerChange(this.form).then((res) => {
         if (res.data.code == 200) {
           //添加成功
