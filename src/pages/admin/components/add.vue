@@ -1,8 +1,8 @@
 <template>
   <div>
     <el-dialog :title="info.title" :visible.sync="info.isShow" @close="close">
-      <el-form :model="form">
-        <el-form-item label="所属角色" :label-width="width">
+      <el-form :model="form" :rules="rules" ref="clearE">
+        <el-form-item label="所属角色" :label-width="width" prop="roleid">
           <el-select v-model="form.roleid">
             <el-option value label="--请选择--" disabled></el-option>
             <el-option
@@ -14,7 +14,7 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="用户名称" :label-width="width">
+        <el-form-item label="用户名称" :label-width="width" prop="username">
           <el-input v-model="form.username" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="密码" :label-width="width">
@@ -62,6 +62,14 @@ export default {
         children: "children",
         label: "title",
       },
+      rules: {
+        roleid: [
+          { required: true, message: "请选择所属角色", trigger: "change" },
+        ],
+        username: [
+          { required: true, message: "请输入角色名称", trigger: "blur" },
+        ],
+      },
     };
   },
   watch: {},
@@ -73,10 +81,12 @@ export default {
     }),
     close() {
       !this.info.isAdd && this.empty();
+      this.$refs.clearE.clearValidate();
     },
     cancel() {
       this.info.isShow = false;
       this.empty();
+      this.$refs.clearE.clearValidate();
     },
     empty() {
       this.form = {
@@ -88,6 +98,14 @@ export default {
     },
 
     add() {
+      if (this.form.roleid === "") {
+        failureAlert("请选择所属角色");
+        return;
+      }
+      if (this.form.username === "") {
+        failureAlert("请输入角色名称");
+        return;
+      }
       reqAdminAdd(this.form).then((res) => {
         if (res.data.code == 200) {
           successAlert("添加成功");
@@ -113,6 +131,14 @@ export default {
     },
 
     change() {
+      if (this.form.roleid === "") {
+        failureAlert("请选择所属角色");
+        return;
+      }
+      if (this.form.username === "") {
+        failureAlert("请输入角色名称");
+        return;
+      }
       reqAdminChange(this.form).then((res) => {
         if (res.data.code == 200) {
           successAlert("修改成功");
