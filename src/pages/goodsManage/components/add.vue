@@ -7,8 +7,8 @@
       @close="close"
       @opened="creatEditor"
     >
-      <el-form :model="form">
-        <el-form-item label="一级分类" :label-width="width">
+      <el-form :model="form" :rules="rules" ref="clearE">
+        <el-form-item label="一级分类" :label-width="width" prop="first_cateid">
           <el-select v-model="form.first_cateid" placeholder="请选择活动区域" @change="changeFirstId">
             <el-option label="--请选择--" value disabled></el-option>
             <!-- 少一个动态的数据 -->
@@ -20,7 +20,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="二级分类" :label-width="width">
+        <el-form-item label="二级分类" :label-width="width" prop="second_cateid">
           <el-select v-model="form.second_cateid" placeholder="请选择活动区域">
             <el-option label="--请选择--" value disabled></el-option>
             <!-- 少一个动态的数据 -->
@@ -33,18 +33,18 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="商品名称" :label-width="width">
+        <el-form-item label="商品名称" :label-width="width" prop="goodsname">
           <el-input v-model="form.goodsname" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="价格" :label-width="width">
+        <el-form-item label="价格" :label-width="width" prop="price">
           <el-input v-model="form.price" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="市场价格" :label-width="width">
+        <el-form-item label="市场价格" :label-width="width" prop="market_price">
           <el-input v-model="form.market_price" autocomplete="off"></el-input>
         </el-form-item>
 
         <!-- 图片 -->
-        <el-form-item label="图片" :label-width="width" v-if="form.pid!=0">
+        <el-form-item label="图片" :label-width="width" v-if="form.pid!=0" prop="img">
           <div class="upload-box">
             <h3 class="upload-add">+</h3>
             <img class="upload-img" v-if="imgUrl" :src="imgUrl" alt />
@@ -52,7 +52,7 @@
           </div>
         </el-form-item>
 
-        <el-form-item label="商品规格" :label-width="width">
+        <el-form-item label="商品规格" :label-width="width" prop="specsid">
           <el-select v-model="form.specsid" placeholder="请选择活动区域" @change="changeSpecId">
             <el-option label="--请选择--" value disabled></el-option>
             <!-- 少一个动态的数据 -->
@@ -65,7 +65,7 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="商品属性" :label-width="width">
+        <el-form-item label="商品属性" :label-width="width" prop="specsattr">
           <el-select v-model="form.specsattr" placeholder="请选择活动区域" multiple>
             <el-option label="--请选择--" value disabled></el-option>
             <!-- 少一个动态的数据 -->
@@ -84,6 +84,7 @@
         <el-form-item label="状态" :label-width="width">
           <el-switch v-model="form.status" :active-value="1" :inactive-value="2"></el-switch>
         </el-form-item>
+
         <el-form-item label="商品描述" :label-width="width">
           <!-- 富文本编辑器的节点 -->
           <div id="editor" v-if="info.isShow"></div>
@@ -136,6 +137,29 @@ export default {
         isnew: 1,
         ishot: 1,
         status: 1,
+      },
+
+      rules: {
+        first_cateid: [
+          { required: true, message: "请选择一级分类", trigger: "change" },
+        ],
+        second_cateid: [
+          { required: true, message: "请选择二级分类", trigger: "change" },
+        ],
+        goodsname: [
+          { required: true, message: "请输入商品名称", trigger: "blur" },
+        ],
+        price: [{ required: true, message: "请输入价格", trigger: "blur" }],
+        market_price: [
+          { required: true, message: "请输入商品价格", trigger: "blur" },
+        ],
+        img: [{ required: true, message: "请输入商品价格", trigger: "change" }],
+        specsid: [
+          { required: true, message: "请选择商品规格", trigger: "change" },
+        ],
+        specsattr: [
+          { required: true, message: "请选择商品属性", trigger: "change" },
+        ],
       },
     };
   },
@@ -207,6 +231,39 @@ export default {
       };
     },
     add() {
+      if (this.form.first_cateid === "") {
+        failureAlert("请选择一级分类");
+        return;
+      }
+      if (this.form.second_cateid === "") {
+        failureAlert("请选择二级分类");
+        return;
+      }
+      if (this.form.goodsname === "") {
+        failureAlert("请输入商品名称");
+        return;
+      }
+      if (this.form.price === "") {
+        failureAlert("请输入价格");
+        return;
+      }
+      if (this.form.market_price === "") {
+        failureAlert("请输入商品价格");
+        return;
+      }
+      if (this.form.img === null) {
+        failureAlert("请添加图片");
+        return;
+      }
+      if (this.form.specsid === "") {
+        failureAlert("请选择商品规格");
+        return;
+      }
+      if (this.form.specsattr.length === 0) {
+        failureAlert("请选择商品属性");
+        return;
+      }
+
       //取出富文本编辑器的内容，赋值给form的description
       this.form.description = this.editor.txt.html();
 
@@ -248,6 +305,38 @@ export default {
       !this.info.isAdd && this.empty();
     },
     change() {
+      if (this.form.first_cateid === "") {
+        failureAlert("请选择一级分类");
+        return;
+      }
+      if (this.form.second_cateid === "") {
+        failureAlert("请选择二级分类");
+        return;
+      }
+      if (this.form.goodsname === "") {
+        failureAlert("请输入商品名称");
+        return;
+      }
+      if (this.form.price === "") {
+        failureAlert("请输入价格");
+        return;
+      }
+      if (this.form.market_price === "") {
+        failureAlert("请输入商品价格");
+        return;
+      }
+      if (this.form.img === null) {
+        failureAlert("请添加图片");
+        return;
+      }
+      if (this.form.specsid === "") {
+        failureAlert("请选择商品规格");
+        return;
+      }
+      if (this.form.specsattr.length === 0) {
+        failureAlert("请选择商品属性");
+        return;
+      }
       //取出富文本编辑器的内容，赋值给form的description
       this.form.description = this.editor.txt.html();
 
