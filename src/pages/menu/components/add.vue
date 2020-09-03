@@ -14,7 +14,7 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="菜单类型">
+        <el-form-item label="菜单类型" :label-width="width">
           <el-radio-group v-model="form.type" disabled>
             <el-radio :label="1">目录</el-radio>
             <el-radio :label="2">菜单</el-radio>
@@ -49,7 +49,7 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="状态">
+        <el-form-item label="状态" :label-width="width">
           <el-switch v-model="form.status" :active-value="1" :inactive-value="2"></el-switch>
         </el-form-item>
       </el-form>
@@ -81,7 +81,7 @@ export default {
   },
   data() {
     return {
-      width: "180px",
+      width: "100px",
       indexRouters: indexRouters,
       form: {
         pid: 0,
