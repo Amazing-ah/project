@@ -1,5 +1,6 @@
 <template>
   <div>
+    <el-button @click="add">添加</el-button>
     <v-add :info="info" ref="look"></v-add>
     <v-list @edit="edit"></v-list>
   </div>
@@ -16,12 +17,18 @@ export default {
     return {
       info: {
         isShow: false,
-        title: "会员修改",
+        title: "会员添加",
       },
     };
   },
   watch: {},
   methods: {
+    add() {
+      this.info = {
+        isShow: true,
+        title: "会员添加",
+      };
+    },
     edit(id) {
       this.info = {
         isShow: true,
