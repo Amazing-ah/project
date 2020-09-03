@@ -2,8 +2,15 @@
   <div class="wrap">
     <div class="box">
       <h3>登录</h3>
-      <el-input v-model="users.username" placeholder="请输入账号" clearable></el-input>
-      <el-input v-model="users.password" placeholder="请输入密码" clearable show-password></el-input>
+      <el-form :model="users" :rules="rules">
+        <el-form-item prop="username">
+          <el-input v-model="users.username" placeholder="输入账号" clearable></el-input>
+        </el-form-item>
+        <el-form-item prop="password">
+          <el-input v-model="users.password" placeholder="输入密码" clearable show-password></el-input>
+        </el-form-item>
+      </el-form>
+
       <el-button type="primary" @click="toLogin">登录</el-button>
     </div>
   </div>
@@ -19,6 +26,16 @@ export default {
       users: {
         username: "",
         password: "",
+      },
+      rules: {
+        username: [
+          { required: true, message: "请输入登录名称", trigger: "blur" },
+          { min: 3, max: 5, message: "长度在 3 到 5 个字符", trigger: "blur" },
+        ],
+        password: [
+          { required: true, message: "请输入密码", trigger: "blur" },
+          { min: 2, max: 5, message: "长度在 2 到 5 个字符", trigger: "blur" },
+        ],
       },
     };
   },
