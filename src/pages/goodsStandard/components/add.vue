@@ -1,16 +1,20 @@
 <template>
   <div>
-    <el-dialog :title="info.title" :visible.sync="info.isShow">
-      <el-form :model="form">
-        <el-form-item label="分类名称" :label-width="width">
+    <el-dialog :title="info.title" :visible.sync="info.isShow" @close="close">
+      <el-form :model="form" :rules="rules" ref="clearE">
+        <el-form-item label="分类名称" :label-width="width" prop="specsname">
           <el-input v-model="form.specsname" autocomplete="off"></el-input>
         </el-form-item>
 
         <el-form-item
-          label="规格属性"
           :label-width="width"
           v-for="(item, index) in valueList"
+          label="规格属性"
           :key="index"
+          :prop="'valueList'+index+'.value'"
+          :rules="{
+      required: true, message: '规格属性不能为空', trigger: 'blur'
+    }"
         >
           <el-row>
             <el-col :span="18">
@@ -61,6 +65,13 @@ export default {
         attrs: "",
         status: 1,
       },
+
+      rules: {
+        specsname: [
+          { required: true, message: "请输入分类名称", trigger: "blur" },
+        ],
+        // value: [{ required: true, message: "请输入规格属性", trigger: "blur" }],
+      },
     };
   },
   watch: {},
@@ -85,6 +96,16 @@ export default {
     },
 
     add() {
+      // specsname: "",
+      // attrs: "",
+      if (this.form.specsname === "") {
+        failureAlert("请输入分类名称");
+        return;
+      }
+      if (this.form.attrs === "") {
+        failureAlert("请输入规格属性");
+        return;
+      }
       this.form.attrs = JSON.stringify(
         this.valueList.map((item) => item.value)
       );
@@ -106,6 +127,11 @@ export default {
     cancel() {
       this.$emit("hide");
       this.empty();
+      this.$refs.clearE.clearValidate();
+    },
+    close() {
+      !this.info.isAdd && this.empty();
+      this.$refs.clearE.clearValidate();
     },
 
     look(id) {
