@@ -93,10 +93,7 @@ export default {
       },
 
       rules: {
-        title: [
-          { required: true, message: "请输入菜单名称", trigger: "blur" },
-          { min: 2, max: 5, message: "长度在 2 到 5 个字符", trigger: "blur" },
-        ],
+        title: [{ required: true, message: "请输入菜单名称", trigger: "blur" }],
         pid: [{ required: true, message: "请选择活动区域", trigger: "change" }],
         icon: [{ required: true, message: "请选择图标", trigger: "change" }],
       },
