@@ -2,11 +2,11 @@
   <div class="add">
     <el-dialog :title="info.title" :visible.sync="info.isShow" width="60%" @close="close">
       <el-form :model="form" :rules="rules" ref="clearE">
-        <el-form-item label="活动名称" :label-width="width">
+        <el-form-item label="活动名称" :label-width="width" prop="title">
           <el-input v-model="form.title" autocomplete="off"></el-input>
         </el-form-item>
 
-        <el-form-item label="活动期限" :label-width="width">
+        <el-form-item label="活动期限" :label-width="width" prop="time">
           <el-date-picker
             v-model="time"
             value-format="timestamp"
@@ -17,7 +17,7 @@
           ></el-date-picker>
         </el-form-item>
 
-        <el-form-item label="一级分类" :label-width="width">
+        <el-form-item label="一级分类" :label-width="width" prop="first_cateid">
           <el-select v-model="form.first_cateid" placeholder="请选择活动区域" @change="changeFirstId">
             <el-option label="--请选择--" value disabled></el-option>
             <!-- 动态的数据 -->
@@ -29,7 +29,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="二级分类" :label-width="width">
+        <el-form-item label="二级分类" :label-width="width" prop="second_cateid">
           <el-select v-model="form.second_cateid" placeholder="请选择活动区域" @change="changeSecondId">
             <el-option label="--请选择--" value disabled></el-option>
 
@@ -43,7 +43,7 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="商品" :label-width="width">
+        <el-form-item label="商品" :label-width="width" prop="goodsid">
           <el-select v-model="form.goodsid" placeholder="请选择">
             <el-option label="--请选择--" value disabled></el-option>
             <!-- 动态的数据 -->
@@ -100,9 +100,15 @@ export default {
         status: 1,
       },
       rules: {
-        roleid: [
-          { required: true, message: "请选择所属角色", trigger: "change" },
+        title: [{ required: true, message: "请输入标题", trigger: "blur" }],
+        time: [{ required: true, message: "请选择时间", trigger: "change" }],
+        first_cateid: [
+          { required: true, message: "请选择一级标题", trigger: "change" },
         ],
+        second_cateid: [
+          { required: true, message: "请选择二级标题", trigger: "change" },
+        ],
+        goodsid: [{ required: true, message: "请选择商品", trigger: "change" }],
       },
     };
   },
@@ -165,6 +171,26 @@ export default {
       };
     },
     add() {
+      if (this.form.title === "") {
+        failureAlert("请输入角色");
+        return;
+      }
+      if (this.time.length === 0) {
+        failureAlert("请选择时间");
+        return;
+      }
+      if (this.form.first_cateid === "") {
+        failureAlert("请选择一级分类");
+        return;
+      }
+      if (this.form.second_cateid === "") {
+        failureAlert("请选择二级分类");
+        return;
+      }
+      if (this.form.goodsid === "") {
+        failureAlert("请选择商品");
+        return;
+      }
       reqSecKillAdd(this.form).then((res) => {
         if (res.data.code == 200) {
           //添加成功
@@ -184,9 +210,7 @@ export default {
       reqSecKillDetail({ id: id }).then((res) => {
         this.form = res.data.list;
         this.form.id = id;
-        this.time.push(res.data.list.begintime);
-        this.time.push(res.data.list.endtime);
-        // this.form.specsattr = this.form.specsattr.split(",");
+        this.time = [res.data.list.begintime, res.data.list.endtime];
         // //二级分类
         this.secondCateList = this.goodsList.find(
           (item) => item.id == this.form.first_cateid
@@ -201,13 +225,32 @@ export default {
     },
     cancel() {
       this.$emit("hide");
-      this.$refs.clearE.clearValidate();
+      this.empty();
     },
     close() {
       !this.info.isAdd && this.empty();
-      this.$refs.clearE.clearValidate();
     },
     change() {
+      if (this.form.title === "") {
+        failureAlert("请输入角色");
+        return;
+      }
+      if (this.time.length === 0) {
+        failureAlert("请选择时间");
+        return;
+      }
+      if (this.form.first_cateid === "") {
+        failureAlert("请选择一级分类");
+        return;
+      }
+      if (this.form.second_cateid === "") {
+        failureAlert("请选择二级分类");
+        return;
+      }
+      if (this.form.goodsid === "") {
+        failureAlert("请选择商品");
+        return;
+      }
       reqSecKillChange(this.form).then((res) => {
         if (res.data.code == 200) {
           successAlert("更新成功");
