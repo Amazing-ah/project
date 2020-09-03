@@ -1,12 +1,12 @@
 <template>
   <div>
     <el-dialog :title="info.title" :visible.sync="info.isShow" @close="close">
-      <el-form :model="form">
-        <el-form-item label="菜单名称" :label-width="width">
+      <el-form :model="form" :rules="rules">
+        <el-form-item label="菜单名称" :label-width="width" prop="title">
           <el-input v-model="form.title" autocomplete="off"></el-input>
         </el-form-item>
 
-        <el-form-item label="上级菜单" :label-width="width">
+        <el-form-item label="上级菜单" :label-width="width" prop="pid">
           <el-select v-model="form.pid" placeholder="请选择活动区域" @change="changePid">
             <el-option label="顶级菜单" :value="0"></el-option>
             <!-- 动态数据 -->
@@ -21,7 +21,7 @@
           </el-radio-group>
         </el-form-item>
 
-        <el-form-item label="菜单图标" :label-width="width" v-if="form.type===1">
+        <el-form-item label="菜单图标" :label-width="width" v-if="form.type===1" prop="icon">
           <el-select v-model="form.icon" placeholder="请选择目录图标">
             <el-option value="el-icon-setting">
               <i class="el-icon-setting"></i>
@@ -91,6 +91,15 @@ export default {
         url: "",
         status: 1,
       },
+
+      rules: {
+        title: [
+          { required: true, message: "请输入菜单名称", trigger: "blur" },
+          { min: 2, max: 5, message: "长度在 2 到 5 个字符", trigger: "blur" },
+        ],
+        pid: [{ required: true, message: "请选择活动区域", trigger: "change" }],
+        icon: [{ required: true, message: "请选择图标", trigger: "change" }],
+      },
     };
   },
   watch: {},
@@ -99,6 +108,7 @@ export default {
 
     cancel() {
       this.$emit("hide");
+      this.empty();
     },
     changePid() {
       this.form.type = this.form.pid == 0 ? 1 : 2;
@@ -115,7 +125,18 @@ export default {
       };
     },
     add() {
-      console.log(this.form);
+      if (this.form.title == "") {
+        failureAlert("菜单名称不能为空");
+        return;
+      }
+      if (this.form.pid == 0 && this.form.icon == "") {
+        failureAlert("请选择菜单图标");
+        return;
+      }
+      if (this.form.pid != 0 && this.form.url == "") {
+        failureAlert("请选择菜单地址");
+        return;
+      }
       reqAddMenu(this.form).then((res) => {
         if (res.data.code === 200) {
           successAlert(res.data.msg);
