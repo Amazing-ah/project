@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-dialog :title="info.title" :visible.sync="info.isShow" @close="close">
-      <el-form :model="form" :rules="rules">
+      <el-form :model="form" :rules="rules" ref="clearE">
         <el-form-item label="菜单名称" :label-width="width" prop="title">
           <el-input v-model="form.title" autocomplete="off"></el-input>
         </el-form-item>
@@ -109,6 +109,7 @@ export default {
     cancel() {
       this.$emit("hide");
       this.empty();
+      this.$refs.clearE.clearValidate();
     },
     changePid() {
       this.form.type = this.form.pid == 0 ? 1 : 2;
@@ -160,6 +161,18 @@ export default {
       });
     },
     update() {
+      if (this.form.title == "") {
+        failureAlert("菜单名称不能为空");
+        return;
+      }
+      if (this.form.pid == 0 && this.form.icon == "") {
+        failureAlert("请选择菜单图标");
+        return;
+      }
+      if (this.form.pid != 0 && this.form.url == "") {
+        failureAlert("请选择菜单地址");
+        return;
+      }
       reqMenuUpdate(this.form).then((res) => {
         if (res.data.code === 200) {
           successAlert(res.data.msg);
@@ -178,6 +191,7 @@ export default {
       if (!this.info.isAdd) {
         this.empty();
       }
+      this.$refs.clearE.clearValidate();
     },
   },
   mounted() {},
