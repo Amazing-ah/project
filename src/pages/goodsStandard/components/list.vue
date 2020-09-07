@@ -73,7 +73,12 @@ export default {
       reqSpecsDel({ id: id }).then((res) => {
         if (res.data.code == 200) {
           successAlert("删除成功");
+
+          // this.reqSpecsPage();
+
+          this.reqSpecsTotal();
           this.reqSpecsList();
+          this.reqSpecsPage(1);
         } else {
           failureAlert(res.data.msg);
         }
@@ -86,7 +91,7 @@ export default {
   mounted() {
     this.reqSpecsList();
     this.reqSpecsTotal();
-    console.log(this.size);
+    // this.reqSpecsPage();
   },
 };
 </script>

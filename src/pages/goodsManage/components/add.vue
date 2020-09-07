@@ -182,6 +182,8 @@ export default {
       reqSpecsList: "standard/reqSpecsListAction",
       //商品列表
       reqList: "goodsManage/reqShangPinListAction",
+      // 总页数
+      reqShangPinTotal: "goodsManage/reqShangPinTotalAction",
     }),
 
     //改变一级分类
@@ -277,6 +279,8 @@ export default {
           this.empty();
           //重新获取list
           this.reqList();
+
+          this.reqShangPinTotal();
         } else {
           failureAlert(res.data.msg);
         }

@@ -86,6 +86,10 @@ export default {
         failureAlert("角色名称不能为空");
         return;
       }
+      if (this.form.menus.length === 0) {
+        failureAlert("角色权限不能为空");
+        return;
+      }
       this.form.menus = JSON.stringify(this.$refs.tree.getCheckedKeys());
       reqRoleAdd(this.form).then((res) => {
         if (res.data.code === 200) {

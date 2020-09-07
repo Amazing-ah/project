@@ -88,6 +88,8 @@ export default {
         if (res.data.code == 200) {
           successAlert("删除成功");
           this.reqList();
+          this.reqShangPinTotal();
+          this.reqShangPinPage(1);
         } else {
           failureAlert(res.data.msg);
         }

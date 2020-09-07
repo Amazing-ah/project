@@ -79,6 +79,7 @@ export default {
   methods: {
     ...mapActions({
       reqSpecsList: "standard/reqSpecsListAction",
+      reqSpecsTotal: "standard/reqSpecsTotalAction",
     }),
     empty() {
       (this.form = { specsname: "", attrs: "", status: 1 }),
@@ -113,6 +114,8 @@ export default {
           this.$emit("hide");
           //数据重置
           this.empty();
+          // 重新获取总页数
+          this.reqSpecsTotal();
           //重新获取list
           this.reqSpecsList();
         } else {
@@ -158,6 +161,8 @@ export default {
           this.$emit("hide");
           //数据重置
           this.empty();
+          // 重新获取总页数
+          this.reqSpecsTotal();
           //重新获取list
           this.reqSpecsList();
         } else {
