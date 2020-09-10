@@ -73,6 +73,7 @@ export default {
         return;
       }
       reqMemberChange(this.form).then((res) => {
+        console.log(res);
         if (res.data.code === 200) {
           successAlert(res.data.msg);
           this.cancel();
